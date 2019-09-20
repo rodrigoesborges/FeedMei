@@ -15,7 +15,11 @@ require(['dojo/_base/kernel', 'dojo/ready'], function (dojo, ready) {
 			App.hotkey_actions["cursor_down"]  = function () { Article.keyboardCursor("down") };
 			App.hotkey_actions["cursor_left"]  = function () { Article.keyboardCursor("left") };
 			App.hotkey_actions["cursor_right"] = function () { Article.keyboardCursor("right") };
+<<<<<<< Updated upstream
 			App.hotkey_actions["cursor_enter"] = function () { Article.keyboardCursor("enter") };
+=======
+			App.hotkey_actions["x"] = function () { Article.keyboardCursor("close") };
+>>>>>>> Stashed changes
 
 			Article.keyboardCursor = function (key) {
 				var hl = Headlines.getLoaded();
@@ -30,7 +34,14 @@ require(['dojo/_base/kernel', 'dojo/ready'], function (dojo, ready) {
 					if (key == "up" && id == Article.getActive())
 						return App.hotkey_actions["article_scroll_up"]();
 
+<<<<<<< Updated upstream
 					if (key == "down" && id == Article.getActive())
+=======
+					if (dir == "x" && id == Article.getActive())
+						return App.hotkey_actions["article_close"]();
+
+					if (dir == "down" && id == Article.getActive())
+>>>>>>> Stashed changes
 						return App.hotkey_actions["article_scroll_down"]();
 
 					if (key == "left") {
