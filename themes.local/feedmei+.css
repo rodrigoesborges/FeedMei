@@ -45,6 +45,9 @@ div.cdm.expanded {
 	}
 }
 
+/* Enable smooth scrolling */
+#headlines-frame, .content { scroll-behavior: smooth }
+
 /* Set custom article fonts */
 .cdm.expanded .header .title,
 .cdm.expandable.active .header .title,
@@ -61,7 +64,8 @@ div.cdm.expanded {
 .content h1,
 .content h2,
 .content h3,
-.content h4 {
+.content h4,
+.content h4 strong {
 	font-family: "PT Sans", sans-serif !important;
 	font-size: 19px !important;
 }

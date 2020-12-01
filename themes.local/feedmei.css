@@ -1,4 +1,4 @@
-@import "../css/default.css";
+@import "../themes/light.css";
 
 @font-face {
 	font-family: "PT Sans";
@@ -94,13 +94,15 @@ body.ttrss_main #toolbar-frame #toolbar {
 	padding: 5px 0;
 	font-size: 1.1em;
 }
-	body.ttrss_main #toolbar-frame #toolbar span.left { padding-left: 5px }
+	body.ttrss_main #toolbar-frame #toolbar i { margin: -5px 0 0 0 }
+	body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left i { margin: 0 4px }
 
-body.ttrss_main #feeds-holder #feedTree .counterNode {
+body.ttrss_main #feeds-holder #feedTree .counterNode,
+body.ttrss_main #toolbar-headlines #feed_current_unread {
 	margin-top: 1px;
 	background: #ddd;
 	padding: .2em;
-	font-size: .75em;
+	font-size: 10.5px;
 	font-weight: bold;
 	color: #777;
 	border: 0;
@@ -131,7 +133,8 @@ body.ttrss_main #overlay_inner {
 }
 
 .flat .dijitTextBoxHover,
-.flat .dijitTextBoxFocused { border-color: #ccc }
+.flat .dijitTextBoxFocused,
+body.ttrss_main div#cmdline { border-color: #ccc }
 
 #toolbar .dijitButtonNode,
 #toolbar table.dijitSelect { box-shadow: none !important }
@@ -204,11 +207,12 @@ a:hover,
 .dijitMenuItem.dijitDisabled .dijitMenuItemLabel { color: #160 !important }
 
 .ttrss_prefs .dijitTreeRowSelected,
-.dijitMenuItemSelected td,
-.dijitTreeRowSelected .filterRules li {
+.dijitMenuItemSelected td {
 	color: #909090 !important;
 	background-color: #eee !important;
 }
+
+.dijitTreeRowSelected .filterRules li:not(.inverse) { color: green !important }
 
 body.ttrss_main .hl,
 body.ttrss_main .hl.Unread,
@@ -233,9 +237,18 @@ div.cdm.expanded {
 	border: 1px solid #eee;
 }
 
+div.cdm .header[stuck] { opacity: 1 !important }
+	div.cdm.expandable:not(.active) .header[stuck] { border-bottom-width: 0 }
+	div.cdm.expanded .header[stuck] {
+		margin: 0 -200%;
+		padding: 0 200%;
+	}
+
 #headlines-frame.normal,
 #headlines-frame .feed-title,
 #content-insert,
+div.cdm.expandable.Selected,
+body.ttrss_main .hl.Selected,
 div.cdm.expanded.active:not(.Unread),
 div.cdm.expandable.active:not(.Unread) {
 	background: #f9f9f9 !important;
@@ -249,6 +262,7 @@ div.cdm.expandable.active:not(.Unread) {
 div.cdm.active div.content,
 div.cdm.expanded.active div.header a.title,
 div.cdm.expandable.active div.header a.title,
+div.cdm.expandable.Selected:not(.active) a,
 body.ttrss_main .hl.active :not(i),
 body.ttrss_main .hl.active .feed a,
 body.ttrss_main .hl.active .hl-content a.title { color: #444 }
@@ -285,9 +299,14 @@ div.cdm.expanded div.header a.title,
 div.cdm.expandable.active div.header a.title,
 div.cdm.expandable.Unread div.header a.title {
 	font-weight: bold;
-	letter-spacing: .005em;
+	letter-spacing: .001em;
 }
 	body.ttrss_main .hl div.title a span { letter-spacing: 0 }
+
+div.cdm .footer {
+	height: auto;
+	min-height: 30px;
+}
 
 div.cdm.expanded .footer {
 	padding: 0 3px 0 0;
