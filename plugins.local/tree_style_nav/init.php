@@ -1,10 +1,8 @@
 <?php
-class Keyboard_Cursor extends Plugin {
-
-	private $host;
+class Tree_Style_Nav extends Plugin {
 
 	function about() {
-		return array(2.0, "
+		return array(2.1, "
 			Use cursor keys for tree-style article navigation.
 			(Key: Command | Command with opened article)
 			Up/Down: Select article row | Scroll through active article,

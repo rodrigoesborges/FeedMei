@@ -1,4 +1,4 @@
-### keyboard_cursor
+### tree_style_nav
 Use cursor keys for a tree-style article navigation. This makes browsing through your articles a lot faster. Forces the following hotkeys:
 
 Hotkey | Command | Command with opened article
@@ -27,6 +27,7 @@ s | Toggle star
 u | Toggle unread
 x | Close article
 g a\|f\|n\|p\|r\|s\|t | Go to All\|Fresh\|Night mode\|Published\|Read\|Starred\|Tags
+v c\|e\|g\|w | Toggle Combined\|Expanded\|Grid View\|Widescreen view mode
 
 ### quick_unsubscribe
 Speed up your cleaning rage with these hotkeys. Hotkeys to speed up the process of going through many feeds and quickly unsubscribe or mark all articles as read.

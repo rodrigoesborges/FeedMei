@@ -16,13 +16,13 @@
 }
 
 /* Optimize legibility by maximum text width */
-div.cdm.expanded {
+#headlines-frame:not([data-enable-grid="true"]) div.cdm.expanded {
 	width: calc(100% - 72px);
 	max-width: 960px;
 	margin: 21px auto;
 }
 
-.content {
+#headlines-frame:not([data-enable-grid="true"]) .content {
 	max-width: 50em;
 	margin: 0 auto;
 }
@@ -46,7 +46,7 @@ div.cdm.expanded {
 }
 
 /* Enable smooth scrolling */
-#headlines-frame, .content { scroll-behavior: smooth }
+#headlines-frame, #content-insert { scroll-behavior: smooth }
 
 /* Set custom article fonts */
 .cdm.expanded .header .title,
@@ -61,11 +61,10 @@ div.cdm.expanded {
 	line-height: 1.6;
 }
 
-.content h1,
-.content h2,
-.content h3,
-.content h4,
-.content h4 strong {
+.content h1, .content h1 *,
+.content h2, .content h2 *,
+.content h3, .content h3 *,
+.content h4, .content h4 * {
 	font-family: "PT Sans", sans-serif !important;
 	font-size: 19px !important;
 }
