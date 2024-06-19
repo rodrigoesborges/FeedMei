@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<style>i { color: red }</style>
-		<title>Tiny Tiny RSS Update & Cleanup Script</title>
+		<title>Tiny Tiny RSS Update &amp; Cleanup Script</title>
 	</head>
 <body>
 <?php
@@ -34,10 +34,10 @@ $line_offset  = 240;   // use FALSE to disable changes
 $keep_langs   = ['en', 'nl']; // use FALSE to disable
 $keep_locale  = ['nl_NL'];    // use FALSE to disable
 $keep_plugins = ['af_readability', 'af_redditimgur', 'af_proxy_http', 'auth_internal', 'bookmarklets', 'note', 'share', 'vf_shared']; // use FALSE to disable
-$root         = pathinfo(__FILE__, PATHINFO_DIRNAME) . '/tt-rss-master'; // folder from extracted zip
+$extracted    = pathinfo(__FILE__, PATHINFO_DIRNAME) . '/tt-rss-master'; // folder from extracted zip
 
-function remove($path, $key = null, $print = true) {
-	chdir($GLOBALS['root']);
+function remove($path, $print = true) {
+	chdir($GLOBALS['extracted']);
 	if (empty($path) || !file_exists($path)) {
 		echo "<li>$path <i>does not exist</i></li>";
 		return;
@@ -54,15 +54,15 @@ function remove($path, $key = null, $print = true) {
 	else if ($print) echo "<li>$path</li>";
 }
 
-function clean($dir = false, $keep, $ext = false) {
-	if ($dir) chdir($GLOBALS['root'] .'/'. $dir);
-	$contents = glob('*'. ($ext ? $ext : ''), ($ext ? null : GLOB_ONLYDIR));
+function clean($dir = false, $keep = false, $ext = false) {
+	if ($dir) chdir($GLOBALS['extracted'] .'/'. $dir);
+	$contents = glob('*'. ($ext ? $ext : ''), ($ext ? 0 : GLOB_ONLYDIR));
 	foreach(array_diff($contents, $keep) as $path)
 		remove($dir .'/'. $path);
 }
 
 function fart($file, $find, $replace) {
-	chdir($GLOBALS['root']);
+	chdir($GLOBALS['extracted']);
 	$contents = file_get_contents($file);
 	$newcontents = str_replace($find, $replace, $contents);
 	if ($newcontents == $contents) {
@@ -73,6 +73,28 @@ function fart($file, $find, $replace) {
 		return false;
 	}
 	return true;
+}
+
+function cpTree($src, $dst) {
+	if (!is_dir($dst))
+		mkdir($dst);
+	$files = array_diff(scandir($src), array('.', '..'));
+	foreach ($files as $file)
+		if (is_dir("$src/$file"))
+			cpTree("$src/$file", "$dst/$file");
+		else if(!@copy("$src/$file", "$dst/$file")) {
+			$error = error_get_last();
+			echo "COPY ERROR: ".$error['type'];
+			echo "<br>". $error['message'];
+		}
+}
+
+function rmTree($dir) {
+	if (!is_dir($dir)) return false;
+	$files = array_diff(scandir($dir), array('.', '..'));
+	foreach ($files as $file)
+		is_dir("$dir/$file") ? rmTree("$dir/$file") : unlink("$dir/$file");
+	return rmdir($dir);
 }
 
 if (isset($_POST['submit'])) {
@@ -97,13 +119,13 @@ if (isset($_POST['submit'])) {
 	$zip = new ZipArchive;
 	$res = $zip->open($target_file);
 	if ($res === true) {
-		print_r(shell_exec('rm -r '. $GLOBALS['root']));
+		rmTree($GLOBALS['extracted']);
 		$zip->extractTo($target_path);
 		$zip->close();
 		unlink($target_file);
 		echo '<li>Contents have been extracted to <b>'. $target_path .'</b></li>';
 
-		chdir($GLOBALS['root']);
+		chdir($GLOBALS['extracted']);
 
 //		echo '<li>Unlinking .less source mapping in light.css</li>';
 //		fart('themes/light.css', '/*# sourceMappingURL=light.css.map */', '');
@@ -140,14 +162,8 @@ if (isset($_POST['submit'])) {
 		echo '<li>Removing useless files...</li><ul>';
 		foreach(glob('{,*,*/*,*/*/*,*/*/*/*,*/*/*/*/*}/{.empty,.gitignore,*.less,*.map,Makefile}', GLOB_BRACE) as $file) // No spaces after comma between {}!
 			remove($file);
-		remove('.editorconfig');
-		remove('.gitignore');
-		remove('CONTRIBUTING.md');
-		remove('COPYING');
-		remove('README.md');
-		remove('config.php-dist');
-		remove('feed-icons');
-		remove('utils');
+		foreach(['.docker', '.vscode', '.dockerignore', '.editorconfig', '.env-dist', '.eslintrc.js', '.gitignore', '.gitlab-ci.yml', 'config.php-dist', 'feed-icons', 'utils', 'Jenkinsfile', 'CONTRIBUTING.md', 'COPYING', 'README.md'] as $item)
+			remove($item);
 
 		if (is_array($keep_langs)) {
 			echo '</ul><li>Removing unused languages (all but '. implode(', ', $keep_locale) .', '. implode(', ', $keep_langs) .')...</li><ul>';
@@ -169,8 +185,8 @@ if (isset($_POST['submit'])) {
 
 		if ($GLOBALS['abort']) die ('<i>Aborting because of error<i>');
 		echo '</ul><li>Moving files into place...</li><ul>';
-		print_r(shell_exec('cp -Rf '. $GLOBALS['root'] .'/* '. pathinfo(__FILE__, PATHINFO_DIRNAME) .'/'));
-		print_r(shell_exec('rm -r '. $GLOBALS['root']));
+		cpTree($GLOBALS['extracted'], pathinfo(__FILE__, PATHINFO_DIRNAME));
+		rmTree($GLOBALS['extracted']);
 
 		echo '</ul>Done.';
 	} else die('Could not open file for extraction');
