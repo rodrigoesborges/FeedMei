@@ -35,6 +35,8 @@ $keep_langs   = ['en', 'nl']; // use FALSE to disable
 $keep_locale  = ['nl_NL'];    // use FALSE to disable
 $keep_plugins = ['af_readability', 'af_redditimgur', 'af_proxy_http', 'auth_internal', 'bookmarklets', 'note', 'share', 'vf_shared']; // use FALSE to disable
 $extracted    = pathinfo(__FILE__, PATHINFO_DIRNAME) . '/tt-rss-master'; // folder from extracted zip
+// Source
+$source_url   = 'https://gitlab.tt-rss.org/tt-rss/tt-rss/-/archive/master/tt-rss-master.zip';
 
 function remove($path, $print = true) {
 	chdir($GLOBALS['extracted']);
@@ -104,7 +106,7 @@ if (isset($_POST['submit'])) {
 	if (isset($_POST['download'])) {
 		echo '<li>Downloading latest commit from master branch...</li>';
 		$target_file = '_tt-rss-update.zip';
-		$master = fopen('https://gitlab.tt-rss.org/tt-rss/tt-rss/-/archive/master/tt-rss-master.zip', 'r');
+		$master = fopen($source_url, 'r');
 		if (!file_put_contents($target_file, $master))
 			die('Download failed');
 	} else {
@@ -141,14 +143,13 @@ if (isset($_POST['submit'])) {
 		} else echo '<li><b>Skipping</b> line offset change</li>';
 
 		if ($force_curl) {
-			echo '<li>Forcing the use of curl</li>';
-			if(!fart('classes/UrlHelper.php', ' && !ini_get("open_basedir")) {',
-				') { /* && !ini_get("open_basedir") Removed by tt-rss updater script in order to force the use of curl */'))
+			echo '<li>Forcing the use of cURL</li>';
+			if(!fart('classes/API.php', 'ini_get("open_basedir")', 'false'))
 					$GLOBALS['abort'] = true;
 			else
 				fart('classes/RSSUtils.php', 'not using CURL due to open_basedir restrictions',
-					'forcing the use of curl (tt-rss updater script)');
-		} else echo '<li><b>NOT forcing</b> the use of curl.</li>';
+					'forcing the use of cURL (tt-rss updater script)');
+		} else echo '<li><b>NOT forcing</b> the use of cURL.</li>';
 
 		if ($alt_hash) {
 			echo '<li>Excluding all fields apart from title and content in article hash calculation.</li>';
@@ -162,7 +163,7 @@ if (isset($_POST['submit'])) {
 		echo '<li>Removing useless files...</li><ul>';
 		foreach(glob('{,*,*/*,*/*/*,*/*/*/*,*/*/*/*/*}/{.empty,.gitignore,*.less,*.map,Makefile}', GLOB_BRACE) as $file) // No spaces after comma between {}!
 			remove($file);
-		foreach(['.docker', '.vscode', '.dockerignore', '.editorconfig', '.env-dist', '.eslintrc.js', '.gitignore', '.gitlab-ci.yml', 'config.php-dist', 'feed-icons', 'utils', 'Jenkinsfile', 'CONTRIBUTING.md', 'COPYING', 'README.md'] as $item)
+		foreach(['.docker', '.vscode', '.dockerignore', '.editorconfig', '.env-dist', '.eslintrc.js', '.gitignore', '.gitlab-ci.yml', 'config.php-dist', 'docker-compose.yml', 'feed-icons', 'gulpfile.js', 'jsconfig.json', 'phpstan.neon', 'utils', 'phpunit.xml', 'CONTRIBUTING.md', 'COPYING', 'README.md'] as $item)
 			remove($item);
 
 		if (is_array($keep_langs)) {
